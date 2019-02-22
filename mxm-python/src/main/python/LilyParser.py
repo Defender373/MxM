@@ -88,7 +88,13 @@ def reformat_to_lily(line_array):
 #the notes, and seperates each bar into sublists. Also allows for cases of
 #tuplets (currently only 3/2 tuplets), which is why we're bringing in pitch
 #Returns an array of arrays of note lengths
-def make_explicit(r,p):
+    #GREG-NOTES(For running Test 5.ly): "barCounter += (1.0/prevLength)" causes float division by zero. Need to check what prevLength's value needs to be.
+    #GREG-NOTES(For running Test 1.ly): "rhythm,pitches = rhythm_parser(songs[0])" causes 'IndexError: list index out of range'. Need to check how to read .ly files
+    #GREG-NOTES(For running Test 2.ly): "rhythm,pitches = rhythm_parser(songs[0])" causes 'IndexError: list index out of range'
+    #GREG-NOTES(For running Test 3.ly): "return codecs.charmap_decode(input,self.errors,decoding_table)[0]" causes 'UnicodeDecodeError: 'charmap' codec can't decode byte 0x9d in position 160: character maps to <undefined>'
+    #GREG-NOTES(For running Test 4.ly): "rhythm,pitches = rhythm_parser(songs[0])" causes 'IndexError: list index out of range'
+    
+def make_explicit(r,p): 
     #print len(r), len(p)
     #print r,p
     tempList = []
@@ -96,7 +102,7 @@ def make_explicit(r,p):
     barCounter = 0.0
     explicitRhythm = []
 
-    for i in xrange(len(r)):
+    for i in range(len(r)):
         rx = r"\\tuplet"
 
         #If this actually a tuplet, then we need to overide where the notes
@@ -193,7 +199,7 @@ def rhythm_to_vector(r,p):
         l = [(prime,None,None)]
 
         chunks = numpy.array_split(r,prime)#Split list by the found prime
-        for i in xrange(len(chunks)):
+        for i in range(len(chunks)):
             l += rhythm_to_vector(chunks[i],p)
         return l
 
@@ -204,7 +210,7 @@ def first_prime(length):
             return i
 
 def is_prime(n):
-    return all(n % i for i in xrange(2, n))
+    return all(n % i for i in range(2, n))
 
 
 #==MAIN========================================================================
@@ -214,7 +220,7 @@ if __name__ == '__main__':
 
     #Replace this file with "../../test/resources/realbook.ly" to test out the
     #entire real book
-    f = open("../../test/resources/test5.ly")
+    f = open("../../test/resources/test2.ly")
     songs = file_splitter(f)
 
     rhythm,pitches = rhythm_parser(songs[0])
@@ -225,11 +231,11 @@ if __name__ == '__main__':
     #Find the size of all of the notes by going into the array of arrays
     #SHOULD PROBABLY REPLACE THIS WITH A RETURN VARIABLE FROM RHYTHM_PARSER
     rhythm_length = 0
-    for i in xrange(len(rhythm)):
+    for i in range(len(rhythm)):
         rhythm_length += len(rhythm[i])
 
-`   #The main processing function call
-    for i in xrange(len(pitches)):
+   #The main processing function call
+    for i in range(len(pitches)):
         v.append(rhythm_to_vector(rhythm[i],pitches))
 
     if __debug__:
