@@ -12,13 +12,15 @@ import re
 #==GLOBAL VARIBALES============================================================
 
 BAR_LENGTH = 1.0 #This needs to change from header parsing
-
+LillyLine = 0 #This keeps track of which line we're on in the .ly file
 
 #==PREPROCESSOR HELPER FUNCTIONS===============================================
 
 #Takes a .ly (specifically in the format defined by open real book). Cuts the
 #file into individual songs and then again into metadata, chords, and
 #notes/rhythms. Returns them as an array of tuples
+#GREG-NOTES: file_splitter needs new if statements. Test2.ly wasn't able to run because none of the if statements returned true.
+#GREG-NOTES: while statement needs some work. The True statement might not be the best for this function, might cause an infinite loop.
 def file_splitter(file):
     songs_array = [] #Organizes songs into arrays of arrays in this format:
                      #([metadata][chords][notes/rhythms])
@@ -104,7 +106,7 @@ def make_explicit(r,p):
 
     for i in range(len(r)):
         rx = r"\\tuplet"
-
+        
         #If this actually a tuplet, then we need to overide where the notes
         #are placed
         if (re.match(rx, p[i], re.I)): #THIS ONLY HANDLES 3/2
@@ -117,10 +119,13 @@ def make_explicit(r,p):
         elif (r[i] == ''):
             tempList.append(prevLength)
             barCounter += (1.0/prevLength) 
-
+        
         #Else, the note length is explicitly given, so set the prevLength to
         #this length
         else:
+#            print(r)
+#            print(int(r[i]))
+#            print("\n")
             prevLength = int(r[i].strip('.'))
             tempList.append(prevLength)
             barCounter += (1.0/prevLength) 
@@ -164,7 +169,7 @@ def rhythm_parser(song): #THIS IS THE UGLIEST CODE I'VE EVER WRITTEN WILL FIX
     temp_pitches = ["".join(tokens) for tokens in pitches_temp]
 
     #Sanitize pitches: only bring in stuff determined by rx
-    for item in temp_pitches:
+    for item in temp_pitches: #GregNotes: invalid literal for int() with base 10: '1~' error starts here #1
         if re.match(rx, item, re.I):
             pitches.append(item)
 
@@ -220,10 +225,14 @@ if __name__ == '__main__':
 
     #Replace this file with "../../test/resources/realbook.ly" to test out the
     #entire real book
-    f = open("../../test/resources/test2.ly")
+    f = open("../../test/resources/realbook.ly")
     songs = file_splitter(f)
 
-    rhythm,pitches = rhythm_parser(songs[0])
+        ''' #GregNotes
+        Code breaks on the first song. Also only runs on the first song.
+        Currently the program does not rhytm_parse on the other songs.
+        '''
+        rhythm,pitches = rhythm_parser(songs[0])  
     
     #v is the final vector of pitches and rhythms
     v = []
