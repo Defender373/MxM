@@ -228,11 +228,12 @@ if __name__ == '__main__':
     f = open("../../test/resources/realbook.ly")
     songs = file_splitter(f)
 
-        ''' #GregNotes
-        Code breaks on the first song. Also only runs on the first song.
-        Currently the program does not rhytm_parse on the other songs.
-        '''
-        rhythm,pitches = rhythm_parser(songs[0])  
+
+    #GregNotes
+    #Code breaks on the first song. Also only runs on the first song.
+    #Currently the program does not rhytm_parse on the other songs.
+
+    rhythm,pitches = rhythm_parser(songs[0])  
     
     #v is the final vector of pitches and rhythms
     v = []
